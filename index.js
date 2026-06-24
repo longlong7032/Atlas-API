@@ -3,7 +3,7 @@ import path from "path";
 import { fileURLToPath } from "url";
 
 
-import { calculateLifePath } from "./numerology/lifePath.js";
+import { calculateLifePath, calculateLifePathRawTotal } from "./numerology/lifePath.js";
 import { calculateExpression } from "./numerology/expression.js";
 import { calculateSmallExpression } from "./numerology/smallExpresssion.js";
 import { calculateSoulNumber } from "./numerology/soul.js";
@@ -66,19 +66,29 @@ app.get("/calculate", async (req, res) => {
     }
 
     const lifePathResult = calculateLifePath(birthdayInput); // Đường đời
+    const lifePathRawTotal = calculateLifePathRawTotal(birthdayInput);
     const expressionResult = calculateExpression(nameInput); // Sứ mệnh
     const smallExpressionResult = calculateSmallExpression(nameInput); // Sứ mệnh nhỏ
-    const soulResult = calculateSoulNumber(nameInput).soulNumber; // Linh hồn
+    const soulResult = calculateSoulNumber(nameInput); // Linh hồn
     const personalityResult = calculatePersonality(nameInput); // Nhân cách
     const smallPersonalityResult = calculatesmallPersonality(nameInput); // Nhân cách nhỏ
     const lifePathAndExpressionResult = calculateLifePathAndExpression(lifePathResult, expressionResult); // Đường đời và sứ mệnh
     const birthdayResult = calculateBirthday(birthdayInput); // Ngày sinh
     const balanceResult = calculateBalance(nameInput);
-    const soulAndPersonalityResult = calculateSoulAndPersonality(soulResult, personalityResult.personalityNumber);
+    const soulAndPersonalityResult = calculateSoulAndPersonality(soulResult.soulNumber, personalityResult.personalityNumber);
     const maturityResult = calculateMaturity(lifePathResult, expressionResult);
+    const maturityRawTotal = Number.parseInt(lifePathResult, 10) + expressionResult;
     const attitudeResult = calculateAttitude(birthdayInput);
     const missingResult = calculateMissing(nameInput);
-    const karmicDebtResult = calculateKarmicDebt([dayBirthday, lifePathResult, soulResult, personalityResult.personalityNumber, expressionResult, maturityResult, birthdayResult]);
+    const karmicDebtResult = calculateKarmicDebt([
+        dayBirthday,
+        lifePathRawTotal,
+        soulResult.rawTotal,
+        personalityResult.rawTotal,
+        expressionResult,
+        maturityRawTotal,
+        birthdayResult,
+    ]);
     const challengeResult = calculateChallenge(birthdayInput);
     const personalYearResult = calculatePersonalYear(birthdayInput);
     const personalMonthResult = calculatePersonalMonth(personalYearResult);
@@ -98,7 +108,7 @@ app.get("/calculate", async (req, res) => {
         "Đường đời": asArray(formatNumber(lifePathResult, true)),
         "Sứ mệnh": asArray(formatNumber(expressionResult, true)),
         "Sứ mệnh nhỏ": asArray(smallExpressionResult),
-        "Linh hồn": asArray(formatNumber(soulResult, true)),
+        "Linh hồn": asArray(formatNumber(soulResult.soulNumber, true)),
         "Nhân cách": asArray(personalityResult.personalityNumber),
         "Nhân cách nhỏ": asArray(smallPersonalityResult),
         "Đường đời và Sứ mệnh": asArray(lifePathAndExpressionResult),

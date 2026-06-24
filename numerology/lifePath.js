@@ -57,4 +57,20 @@ function calculateLifePath(dateString) {
     return formatMasterNumber(finalResult);
 }
 
-export { calculateLifePath };
+function calculateLifePathRawTotal(dateString) {
+    const parts = String(dateString).split("/");
+    if (parts.length !== 3) return null;
+
+    const [dayRaw, monthRaw, yearRaw] = parts;
+    const day = Number(dayRaw);
+    const month = Number(monthRaw);
+    const year = Number(yearRaw);
+
+    const reducedDay = (day === 11 || day === 22 || day === 33) ? day : reduceWithMaster(day, true);
+    const reducedMonth = (month === 11 || month === 22 || month === 33) ? month : reduceWithMaster(month, true);
+    const reducedYear = reduceWithMaster(year, true);
+
+    return reducedDay + reducedMonth + reducedYear;
+}
+
+export { calculateLifePath, calculateLifePathRawTotal };
