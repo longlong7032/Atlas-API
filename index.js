@@ -4,11 +4,12 @@ import { fileURLToPath } from "url";
 
 
 import { calculateLifePath, calculateLifePathRawTotal } from "./numerology/lifePath.js";
-import { calculateExpression } from "./numerology/expression.js";
+import { calculateExpression, calculateExpressionRawTotal } from "./numerology/expression.js";
 import { calculateSmallExpression } from "./numerology/smallExpresssion.js";
 import { calculateSoulNumber } from "./numerology/soul.js";
+import { calculateSmallSoul } from "./numerology/smallSoul.js";
 import { calculatePersonality } from "./numerology/personality.js";
-import { calculatesmallPersonality } from "./numerology/smallPersonality.js";
+import { calculateSmallPersonality } from "./numerology/smallPersonality.js";
 import { calculateLifePathAndExpression } from "./numerology/lifePathAndExpression.js";
 import { calculateBirthday } from "./numerology/birthday.js";
 import { calculateBalance } from "./numerology/balance.js";
@@ -68,10 +69,12 @@ app.get("/calculate", async (req, res) => {
     const lifePathResult = calculateLifePath(birthdayInput); // Đường đời
     const lifePathRawTotal = calculateLifePathRawTotal(birthdayInput);
     const expressionResult = calculateExpression(nameInput); // Sứ mệnh
+    const expressionRawTotal = calculateExpressionRawTotal(nameInput);
     const smallExpressionResult = calculateSmallExpression(nameInput); // Sứ mệnh nhỏ
     const soulResult = calculateSoulNumber(nameInput); // Linh hồn
+    const smallSoulResult = calculateSmallSoul(nameInput); // Linh hồn nhỏ
     const personalityResult = calculatePersonality(nameInput); // Nhân cách
-    const smallPersonalityResult = calculatesmallPersonality(nameInput); // Nhân cách nhỏ
+    const smallPersonalityResult = calculateSmallPersonality(nameInput); // Nhân cách nhỏ
     const lifePathAndExpressionResult = calculateLifePathAndExpression(lifePathResult, expressionResult); // Đường đời và sứ mệnh
     const birthdayResult = calculateBirthday(birthdayInput); // Ngày sinh
     const balanceResult = calculateBalance(nameInput);
@@ -85,7 +88,7 @@ app.get("/calculate", async (req, res) => {
         lifePathRawTotal,
         soulResult.rawTotal,
         personalityResult.rawTotal,
-        expressionResult,
+        expressionRawTotal,
         maturityRawTotal,
         birthdayResult,
     ]);
@@ -109,6 +112,7 @@ app.get("/calculate", async (req, res) => {
         "Sứ mệnh": asArray(formatNumber(expressionResult, true)),
         "Sứ mệnh nhỏ": asArray(smallExpressionResult),
         "Linh hồn": asArray(formatNumber(soulResult.soulNumber, true)),
+        "Linh hồn nhỏ": asArray(smallSoulResult),
         "Nhân cách": asArray(personalityResult.personalityNumber),
         "Nhân cách nhỏ": asArray(smallPersonalityResult),
         "Đường đời và Sứ mệnh": asArray(lifePathAndExpressionResult),

@@ -63,4 +63,16 @@ function calculateExpression (name) {
     const totalValue = wordValues.reduce((sum, w) => sum + w.value, 0);
     return reduceNumber(totalValue, true);
 }
-export { calculateExpression };
+
+function calculateExpressionRawTotal(name) {
+    const words = normalizeName(name).split(' ').filter(w => w.trim() !== '');
+    const wordValues = words.map(word => {
+        const letters = word.split('');
+        const total = letters.reduce((sum, letter) => sum + charToNumber(letter), 0);
+        return { word, value: reduceNumber(total, true) };
+    });
+
+    return wordValues.reduce((sum, w) => sum + w.value, 0);
+}
+
+export { calculateExpression, calculateExpressionRawTotal };

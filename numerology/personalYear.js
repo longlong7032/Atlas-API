@@ -9,7 +9,7 @@ function calculatePersonalYear(birthday) {
 
     let sum = reduceNumber(yearCurrent, false) + reduceNumber(month, false) + reduceNumber(day, false);
 
-    let result = reduceNumber(sum, true);
+    let result = reduceNumber(sum, false);
 
     return result;
 }

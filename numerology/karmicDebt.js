@@ -18,14 +18,29 @@ function normalizeDebtValue(value) {
     return null;
 }
 
+function formatDebtNumber(value) {
+    const reduced = String(value)
+        .split("")
+        .reduce((sum, digit) => sum + Number(digit), 0);
+
+    if (value === 13) return "13/4";
+    if (value === 14) return "14/5";
+    if (value === 16) return "16/7";
+    if (value === 19) return "19/1";
+
+    return String(reduced);
+}
+
 function calculateKarmicDebt(numbers) {
     const debts = [13, 14, 16, 19];
     const result = [];
+    const seen = new Set();
 
     for (const value of numbers) {
         const normalized = normalizeDebtValue(value);
-        if (normalized !== null && debts.includes(normalized) && !result.includes(normalized)) {
-            result.push(normalized);
+        if (normalized !== null && debts.includes(normalized) && !seen.has(normalized)) {
+            seen.add(normalized);
+            result.push(formatDebtNumber(normalized));
         }
     }
 

@@ -1,6 +1,6 @@
 import { normalizeName, reduceNumber, charToNumber, isVowel } from "../helper/pythaforasTable.js";
 
-function calculatesmallPersonality(fullName) {
+function calculateSmallPersonality(fullName) {
     // Chuẩn hóa tên
     const normalized = normalizeName(fullName);
 
@@ -18,4 +18,4 @@ function calculatesmallPersonality(fullName) {
     return result;
 }
 
-export { calculatesmallPersonality };
+export { calculateSmallPersonality };
