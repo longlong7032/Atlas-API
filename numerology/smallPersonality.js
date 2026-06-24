@@ -1,11 +1,19 @@
 import { normalizeName, reduceNumber, charToNumber, isVowel } from "../helper/pythaforasTable.js";
 
 function calculateSmallPersonality(fullName) {
+    if (!fullName || typeof fullName !== 'string') {
+        throw new Error('fullName phải là chuỗi không rỗng');
+    }
+
     // Chuẩn hóa tên
     const normalized = normalizeName(fullName);
 
     // Chỉ lấy tên
-    const firstName = normalized.split(' ').slice(-1)[0];
+    const firstName = normalized.split(' ').filter(Boolean).slice(-1)[0];
+
+    if (!firstName) {
+        throw new Error('Không tìm được tên chính hợp lệ');
+    }
 
     // Tính tổng số phụ âm trong tên
     const consonantSum = firstName
@@ -18,8 +26,7 @@ function calculateSmallPersonality(fullName) {
         .reduce((sum, char) => sum + charToNumber(char), 0);
 
     // Rút gọn số về 1 chữ số
-    let result = reduceNumber(consonantSum, false);
-    return result;
+    return reduceNumber(consonantSum, false);
 }
 
 export { calculateSmallPersonality };
