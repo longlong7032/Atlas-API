@@ -1,15 +1,4 @@
-import { charToNumber, normalizeName, reduceNumber } from "../helper/pythaforasTable.js";
-
-const BASE_VOWELS = new Set(['A','E','I','O','U']);
-
-function isVowelAt(word, index) {
-  const ch = word[index];
-  if (BASE_VOWELS.has(ch)) return true;
-  if (ch !== 'Y') return false;
-  const prev = index > 0 ? word[index - 1] : null;
-  const next = index < word.length - 1 ? word[index + 1] : null;
-  return !BASE_VOWELS.has(prev) && !BASE_VOWELS.has(next);
-}
+import { charToNumber, normalizeName, reduceNumber, isVowel } from "../helper/pythaforasTable.js";
 
 /**
  * Tính số linh hồn từ họ tên đầy đủ.
@@ -26,22 +15,33 @@ function calculateSoulNumber(fullName) {
 
   if (!words.length) throw new Error('Không tìm được ký tự hợp lệ');
 
-  let total = 0;
   const details = words.map((word) => {
     const vowels = [];
+
     for (let i = 0; i < word.length; i++) {
-      if (isVowelAt(word, i)) {
+      const prevChar = i > 0 ? word[i - 1] : null;
+      const nextChar = i < word.length - 1 ? word[i + 1] : null;
+
+      if (isVowel(word[i], prevChar, nextChar)) {
         vowels.push({ letter: word[i], value: charToNumber(word[i]) });
       }
     }
-    const sum = vowels.reduce((s, v) => s + v.value, 0);
-    total += sum;
-    return { word, vowels, sum };
+
+    const rawSum = vowels.reduce((sum, vowel) => sum + vowel.value, 0);
+    const reducedSum = reduceNumber(rawSum, true);
+
+    return {
+      word,
+      vowels,
+      rawSum,
+      reducedSum,
+    };
   });
 
+  const total = details.reduce((sum, item) => sum + item.reducedSum, 0);
   const reduction = {
     value: reduceNumber(total, true),
-    steps: [total],
+    steps: [details.map((item) => item.rawSum), total],
   };
 
   return {
