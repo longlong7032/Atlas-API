@@ -10,7 +10,11 @@ function calculateSmallPersonality(fullName) {
     // Tính tổng số phụ âm trong tên
     const consonantSum = firstName
         .split('')
-        .filter(char => charToNumber(char) !== null && !isVowel(char))
+        .filter((char, index, chars) => {
+            const prevChar = index > 0 ? chars[index - 1] : null;
+            const nextChar = index < chars.length - 1 ? chars[index + 1] : null;
+            return charToNumber(char) && !isVowel(char, prevChar, nextChar);
+        })
         .reduce((sum, char) => sum + charToNumber(char), 0);
 
     // Rút gọn số về 1 chữ số
