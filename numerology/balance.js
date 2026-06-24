@@ -1,22 +1,20 @@
 import { normalizeName, reduceNumber, charToNumber, isVowel } from "../helper/pythaforasTable.js";
 
 function calculateBalance(name) {
-    // name: "Nguyễn Văn An"
-    // Chuẩn hóa tên: loại bỏ dấu, chuyển thành chữ thường
-    let normalized = normalizeName(name);
+    if (!name || typeof name !== 'string') {
+        throw new Error('name phải là chuỗi không rỗng');
+    }
 
-    // Tách tên thành các phần (họ, tên đệm, tên chính)
-    let parts = normalized.split(' ');
+    const normalized = normalizeName(name);
+    const parts = normalized.split(/\s+/).filter(Boolean);
 
-    // Lấy chữ cái đầu của mỗi phần để tính số cân bằng
-    const initials = parts.map(p => p[0]);
+    if (!parts.length) {
+        throw new Error('Không tìm được tên hợp lệ');
+    }
 
-    // Tính tổng số của các chữ cái đầu
-    let result = initials.reduce((sum, initial) => sum + charToNumber(initial), 0);
+    const initials = parts.map(part => part[0]);
+    const total = initials.reduce((sum, initial) => sum + charToNumber(initial), 0);
 
-    // Rút gọn số cân bằng
-    result = reduceNumber(result);
-
-    return result;
+    return reduceNumber(total, false);
 }
 export { calculateBalance };
