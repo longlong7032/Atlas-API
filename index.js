@@ -1,7 +1,7 @@
 import Express from "express";
 import path from "path";
 import { fileURLToPath } from "url";
-
+import helmet from "helmet"
 
 import { calculateLifePath, calculateLifePathRawTotal } from "./numerology/lifePath.js";
 import { calculateExpression, calculateExpressionRawTotal } from "./numerology/expression.js";
@@ -37,6 +37,24 @@ const app = Express();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+app.use(Express.static(path.join(__dirname, "public")));
+app.use(Express.json());
+app.use(Express.urlencoded({ extended: true }));
+app.use(
+    helmet({
+        contentSecurityPolicy: {
+            useDefaults: true,
+            directives: {
+                defaultSrc: ["'self'"],
+                scriptSrc: ["'self'", "'unsafe-inline'", "https://cdn.tailwindcss.com"],
+                styleSrc: ["'self'", "'unsafe-inline'"],
+                imgSrc: ["'self'", "data:"],
+                fontSrc: ["'self'", "data:"],
+                connectSrc: ["'self'"],
+            },
+        },
+    })
+);
 //===============================
 
 function asArray(value) {
@@ -103,11 +121,11 @@ app.get("/calculate", async (req, res) => {
     const pinnacleResult = calculatePinnacle(birthdayInput);
 
     return res.json({
-        "Họ và tên": asArray(nameInput),
-        "Ngày tháng năm sinh": asArray(birthdayInput),
-        "Ngày sinh": asArray(dayBirthday),
-        "Tháng sinh": asArray(monthBirthday),
-        "Năm sinh": asArray(yearBirthday),
+        // "Họ và tên": asArray(nameInput),
+        // "Ngày tháng năm sinh": asArray(birthdayInput),
+        // "Ngày sinh": asArray(dayBirthday),
+        // "Tháng sinh": asArray(monthBirthday),
+        // "Năm sinh": asArray(yearBirthday),
         "Đường đời": asArray(formatNumber(lifePathResult, true)),
         "Sứ mệnh": asArray(formatNumber(expressionResult, true)),
         "Sứ mệnh nhỏ": asArray(smallExpressionResult),
