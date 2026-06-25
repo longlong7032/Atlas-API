@@ -1,6 +1,6 @@
 
 
-import { normalizeName, reduceNumber, charToNumber, isVowel } from "../helper/pythaforasTable.js";
+import { normalizeName, reduceNumber, charToNumber } from "../helper/pythaforasTable.js";
 
 
 /**
@@ -11,27 +11,24 @@ import { normalizeName, reduceNumber, charToNumber, isVowel } from "../helper/py
  * @returns {number} The rational thinking number of the person.
  */
 function calculateRationalThinking(fullname, dayBirthday) {
+    if (!fullname || typeof fullname !== 'string') {
+        throw new Error('fullname phải là chuỗi không rỗng');
+    }
 
-    console.log("===== Chỉ số Tư duy lý chí =====");
+    const normalized = normalizeName(fullname);
+    const words = normalized.split(/\s+/).filter(Boolean);
+    const firstName = words.at(-1) || '';
 
-    // Lấy tên người
-    const name = fullname.split(' ')[0].toUpperCase().split('')[0];
+    if (!firstName) {
+        throw new Error('Không tìm được tên chính hợp lệ');
+    }
 
-    // Quy đổi tên người → số
-    const nameNumber = charToNumber(name);
+    const nameTotal = firstName
+        .split('')
+        .reduce((sum, char) => sum + charToNumber(char), 0);
+    const nameReduce = reduceNumber(nameTotal, false);
+    const dayReduce = reduceNumber(Number(dayBirthday), false);
 
-    // Rút gón tên người
-    const nameReduce = reduceNumber(nameNumber);
-
-    // Rút gọn ngày
-    const dayReduce = reduceNumber(dayBirthday)
-
-    // Cộng hai số
-    let total = nameReduce + dayReduce;
-
-    // Rút gọn kết quả
-    let result = reduceNumber(total);
-
-    return result;
+    return reduceNumber(nameReduce + dayReduce, false);
 }
 export { calculateRationalThinking };
